@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 import { useDropzone } from 'react-dropzone';
-import './App.css';
+import './app.css';
 
 // ⚠️ Pastikan file ini ada di folder /public
 const FRAME_URL = "/frame-ldks.png"; 
