@@ -53,8 +53,8 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1>🇮🇩 Twibbon LDKS 2025</h1>
-      <p className="subtitle">hai hai
+      <h1>Twibbon LDKS SMK Telkom Sidoarjo 2025</h1>
+      <p className="subtitle">Silahkan upload foto kamu dan atur posisinya sesuai keinginan.
       </p>
       
       {!image ? (
