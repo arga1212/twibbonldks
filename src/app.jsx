@@ -26,25 +26,40 @@ const App = () => {
 
   const handleDownload = async () => {
     if (editorRef.current) {
-      const canvasUserPhoto = editorRef.current.getImageScaledToCanvas();
+      // === PERBAIKAN DI SINI ===
+      // Ganti getImageScaledToCanvas() jadi getImage()
+      // getImage() mengambil resolusi ASLI dari foto yang diupload
+      const canvasUserPhoto = editorRef.current.getImage();
+      
       const finalCanvas = document.createElement('canvas');
+      // Kita set output HD (1080x1080)
       const size = 1080; 
       finalCanvas.width = size;
       finalCanvas.height = size;
       const ctx = finalCanvas.getContext('2d');
 
+      // 1. Bersihkan background (putih)
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, size, size);
+
+      // 2. Gambar Foto User (Resolusi Tinggi)
+      // ctx.drawImage otomatis menyesuaikan resolusi asli ke ukuran 1080x1080
+      // Jadi kalau upload foto HD, hasilnya tetap tajam!
       ctx.drawImage(canvasUserPhoto, 0, 0, size, size);
 
+      // 3. Gambar Frame
       const frameImg = new Image();
       frameImg.src = FRAME_URL;
       frameImg.crossOrigin = "anonymous"; 
+      
       frameImg.onload = () => {
+        // Gambar frame di atas foto
         ctx.drawImage(frameImg, 0, 0, size, size);
-        const dataUrl = finalCanvas.toDataURL('image/png', 1.0);
+        
+        // Export jadi PNG
+        const dataUrl = finalCanvas.toDataURL('image/png', 1.0); // 1.0 = Kualitas Maksimal
         const link = document.createElement('a');
-        link.download = 'TWIBBON-LDKS-2025.png';
+        link.download = 'TWIBBON-LDKS-SMK-TELKOM-SDA.png';
         link.href = dataUrl;
         link.click();
       };
@@ -53,9 +68,9 @@ const App = () => {
 
   return (
     <div className="container">
+      {/* Update Judul Sesuai Sekolahmu */}
       <h1>Twibbon LDKS SMK Telkom Sidoarjo 2025</h1>
-      <p className="subtitle">Silahkan upload foto kamu dan atur posisinya sesuai keinginan.
-      </p>
+      <p className="subtitle">Silahkan upload foto kamu dan atur posisinya sesuai keinginan.</p>
       
       {!image ? (
         <div {...getRootProps()} className={`dropzone-area ${isDragActive ? 'dropzone-active' : ''}`}>
@@ -65,7 +80,6 @@ const App = () => {
         </div>
       ) : (
         <div className="editor-container">
-          {/* AREA EDITOR FOTO */}
           <div className="twibbon-wrapper">
             <AvatarEditor
               ref={editorRef}
@@ -80,7 +94,6 @@ const App = () => {
             <img src={FRAME_URL} alt="Frame" className="frame-overlay" />
           </div>
 
-          {/* AREA KONTROL (Disini Slidernya) */}
           <div className="controls">
             <div className="slider-group">
                 <span className="slider-label">🔍 Zoom:</span>
@@ -101,11 +114,11 @@ const App = () => {
           </div>
           
           <button className="btn btn-download" onClick={handleDownload}>
-            🚀 DOWNLOAD HASIL
+            🚀 DOWNLOAD HASIL HD
           </button>
           
           <p style={{fontSize: '12px', color: '#999', marginTop: '10px'}}>
-            *Geser/Drag foto di dalam kotak untuk pas-in posisi
+            *Geser foto di kotak untuk menyesuaikan posisi
           </p>
         </div>
       )}
