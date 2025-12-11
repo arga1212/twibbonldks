@@ -14,7 +14,6 @@ const App = () => {
   const [copySuccess, setCopySuccess] = useState("Salin Caption");
   
   const editorRef = useRef(null);
-  // Ref untuk nyimpen jarak cubitan terakhir
   const lastPinchDist = useRef(null); 
 
   // --- LOGIC DROPZONE ---
@@ -45,14 +44,12 @@ const App = () => {
   };
 
   // --- LOGIC ZOOM (PINCH / CUBIT DI HP) ---
-  // Rumus Matematika: Jarak 2 jari (Hypotenuse)
   const getDistance = (touch1, touch2) => {
     return Math.hypot(touch2.pageX - touch1.pageX, touch2.pageY - touch1.pageY);
   };
 
   const handleTouchStart = (e) => {
     if (e.touches.length === 2) {
-      // Kalau 2 jari nempel, simpan jarak awalnya
       const dist = getDistance(e.touches[0], e.touches[1]);
       lastPinchDist.current = dist;
     }
@@ -60,22 +57,15 @@ const App = () => {
 
   const handleTouchMove = (e) => {
     if (e.touches.length === 2 && lastPinchDist.current) {
-      // Hitung jarak baru
       const dist = getDistance(e.touches[0], e.touches[1]);
-      // Hitung selisih jarak (Zoom Factor)
       const zoomFactor = dist / lastPinchDist.current;
-      
-      // Update scale (dikali zoomFactor biar smooth)
-      // Kita limit biar ga terlalu cepet perubahannya
       const newScale = Math.min(Math.max(scale * (zoomFactor), 1), 5);
-      
       setScale(newScale);
-      lastPinchDist.current = dist; // Update jarak terakhir
+      lastPinchDist.current = dist; 
     }
   };
 
   const handleTouchEnd = () => {
-    // Reset kalau jari diangkat
     lastPinchDist.current = null;
   };
 
@@ -100,8 +90,8 @@ const App = () => {
     }
   };
 
-  // --- CAPTION LOGIC ---
-  const captionText = `💫 I'm ready to find direction and become better with LDKS SMK Telkom Sidoarjo 2025! 💫\n\nHalo teman-teman 👋🏻\nPerkenalkan, saya [Nama kamu] dari [Organisasi Kamu] selaku Peserta LDKS SMK Telkom Sidoarjo siap menjalani rangkaian kegiatan LDKS dengan penuh semangat, disiplin, dan aktif.\n\n"From Inspiration to Transformation"\nSee you at LDKS SMK Telkom Sidoarjo 2025 👀`;
+  // --- CAPTION LOGIC BARU ---
+  const captionText = `💫 I'm ready to find direction and become better with LDKS SMK Telkom Sidoarjo 2025! 💫\n\nHalo teman-teman 👋🏻\nPerkenalkan, saya [Nama kamu] dari [Organisasi Kamu] selaku Peserta LDKS SMK Telkom Sidoarjo siap menjalani rangkaian kegiatan LDKS dengan penuh semangat, disiplin, dan aktif. Saya siap belajar, berproses, dan tumbuh menjadi pribadi yang lebih tangguh dan bertanggung jawab.\n\n⏳Motto Hidup\n[Isi dengan motto kamu]\n\n"From Inspiration to Transformation"\nSee you at LDKS SMK Telkom Sidoarjo 2025 👀\n\n@smktelkomsda @osis.smktelkomsda @mpk.smktelkomsda\n#LDKS2025 #LDKSKOMDA2025 #Leadership`;
 
   const handleCopyCaption = async () => {
     try {
@@ -130,7 +120,7 @@ const App = () => {
             </div>
           ) : (
             <div className="editor-container">
-              {/* AREA INTERAKSI: Mouse Wheel + Touch Pinch */}
+              {/* AREA INTERAKSI */}
               <div 
                 className="twibbon-wrapper" 
                 onWheel={handleWheel}
@@ -151,7 +141,7 @@ const App = () => {
                 <img src={FRAME_URL} alt="Frame" className="frame-overlay" />
               </div>
 
-              {/* SLIDER CONTROLS (Tetap ada buat opsi) */}
+              {/* SLIDER CONTROLS */}
               <div className="controls">
                 <div className="slider-group">
                     <span className="slider-label">🔍 Zoom</span>
@@ -175,24 +165,39 @@ const App = () => {
               </div>
               
               <button className="btn btn-download" onClick={handleDownload}>
-                DOWNLOAD HASIL
+                DOWNLOAD
               </button>
             </div>
           )}
         </div>
 
-        {/* KARTU CAPTION */}
+        {/* KARTU CAPTION (UPDATE BARU) */}
         <div className="card caption-card">
-          <h2>📋 Caption</h2>
+          <h2>📋 Caption Siap Pakai</h2>
           <div className="caption-box">
             <p>💫 I'm ready to find direction and become better with LDKS SMK Telkom Sidoarjo 2025! 💫</p>
             <br/>
+            
             <p>Halo teman-teman 👋🏻<br/>
-            Perkenalkan, saya <b>[Nama kamu]</b> dari <b>[Organisasi Kamu]</b> selaku Peserta LDKS SMK Telkom Sidoarjo siap menjalani rangkaian kegiatan LDKS dengan penuh semangat, disiplin, dan aktif.</p>
+            Perkenalkan, saya <b>[Nama kamu]</b> dari <b>[Organisasi Kamu]</b> selaku Peserta LDKS SMK Telkom Sidoarjo siap menjalani rangkaian kegiatan LDKS dengan penuh semangat, disiplin, dan aktif. Saya siap belajar, berproses, dan tumbuh menjadi pribadi yang lebih tangguh dan bertanggung jawab.</p>
             <br/>
+            
+            <p>⏳Motto Hidup<br/>
+            <b>[Isi dengan motto kamu]</b></p>
+            <br/>
+            
             <blockquote className="quote">"From Inspiration to Transformation"</blockquote>
+            
             <p>See you at LDKS SMK Telkom Sidoarjo 2025 👀</p>
+            <br/>
+            
+            {/* Bagian Tag & Hashtag */}
+            <p style={{color: '#c8102e', fontWeight: 'bold', fontSize: '0.85rem'}}>
+                @smktelkomsda @osis.smktelkomsda @mpk.smktelkomsda<br/>
+                #LDKS2025 #LDKSKOMDA2025 #Leadership
+            </p>
           </div>
+          
           <button 
             className={`btn btn-copy ${copySuccess.includes("Berhasil") ? 'success' : ''}`} 
             onClick={handleCopyCaption}

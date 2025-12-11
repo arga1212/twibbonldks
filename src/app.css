@@ -179,3 +179,15 @@ input[type=range] { flex: 1; accent-color: var(--merah-ldks); cursor: pointer; h
   
   .caption-box { max-height: 300px; } /* Scroll caption lebih pendek */
 }
+
+.twibbon-wrapper {
+  /* Mencegah browser zoom saat user nyubit foto */
+  touch-action: none; 
+  /* Memastikan kursor tangan muncul */
+  cursor: move; 
+  cursor: grab;
+}
+
+.twibbon-wrapper:active {
+  cursor: grabbing;
+}
