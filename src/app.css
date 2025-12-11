@@ -1,26 +1,29 @@
 /* === RESET & GLOBAL === */
 :root {
-    --merah-ldks: #c8102e; /* Warna merah yang tegas */
+    --merah-ldks: #c8102e;
     --putih-tulang: #f8f9fa;
-    --abu-teks: #555;
+    --abu-teks: #444; /* Saya gelapkan dikit biar makin jelas */
     --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
   
   body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    /* GANTI FONT JADI POPPINS */
+    font-family: 'Poppins', sans-serif;
+    /* AGAR AGAK TEBAL (Medium) */
+    font-weight: 500; 
     margin: 0;
     padding: 0;
     background-color: var(--putih-tulang);
-    /* Fallback background jika animasi mati */
     background-image: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     min-height: 100vh;
-    overflow-x: hidden; /* Mencegah scroll samping karena animasi */
+    overflow-x: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
+    color: #333; /* Warna teks default agak hitam pekat */
   }
   
-  /* === BACKGROUND ANIMATION (SIMPLE FUN) === */
+  /* === BACKGROUND ANIMATION === */
   .app-container {
     position: relative;
     width: 100%;
@@ -36,7 +39,7 @@
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
     overflow: hidden;
-    z-index: -1; /* Taruh di belakang konten */
+    z-index: -1;
     pointer-events: none;
   }
   
@@ -49,25 +52,16 @@
   }
   
   .shape-1 {
-    top: -10%; left: -10%;
-    width: 400px; height: 400px;
-    background: rgba(200, 16, 46, 0.2); /* Merah transparan */
-    animation-duration: 25s;
+    top: -10%; left: -10%; width: 400px; height: 400px;
+    background: rgba(200, 16, 46, 0.2); animation-duration: 25s;
   }
-  
   .shape-2 {
-    bottom: 10%; right: -5%;
-    width: 300px; height: 300px;
-    background: rgba(50, 50, 200, 0.1); /* Biru samar transparan */
-    animation-delay: -5s;
-    animation-duration: 30s;
+    bottom: 10%; right: -5%; width: 300px; height: 300px;
+    background: rgba(50, 50, 200, 0.1); animation-delay: -5s; animation-duration: 30s;
   }
-  
   .shape-3 {
-    top: 40%; right: 30%;
-    width: 200px; height: 200px;
-    background: rgba(200, 16, 46, 0.15);
-    animation-delay: -10s;
+    top: 40%; right: 30%; width: 200px; height: 200px;
+    background: rgba(200, 16, 46, 0.15); animation-delay: -10s;
   }
   
   @keyframes floatAnimation {
@@ -75,11 +69,10 @@
     100% { transform: translate(50px, 50px) rotate(20deg) scale(1.1); }
   }
   
-  
-  /* === MAIN LAYOUT WRAPPER === */
+  /* === LAYOUT === */
   .main-wrapper {
     display: flex;
-    flex-wrap: wrap; /* Biar turun ke bawah kalo layar sempit (HP) */
+    flex-wrap: wrap;
     gap: 30px;
     justify-content: center;
     align-items: flex-start;
@@ -88,47 +81,52 @@
     z-index: 1;
   }
   
-  /* === CARD STYLES (Gaya Dasar Kartu) === */
+  /* === CARD STYLES === */
   .card {
     background: #fff;
     padding: 35px;
     border-radius: 24px;
     box-shadow: var(--shadow-card);
     text-align: center;
-    flex: 1 1 400px; /* Flex grow, shrink, basis 400px */
-    min-width: 300px; /* Lebar minimum kartu */
+    flex: 1 1 400px;
+    min-width: 300px;
     border-top: 6px solid var(--merah-ldks);
     transition: transform 0.3s ease;
   }
   
-  .card:hover {
-    transform: translateY(-5px); /* Efek naik dikit pas di-hover */
-  }
+  .card:hover { transform: translateY(-5px); }
   
-  h1, h2 {
+  h1 {
     color: var(--merah-ldks);
     margin-bottom: 10px;
     font-size: 1.8rem;
+    font-weight: 700; /* Bold banget */
+    letter-spacing: -0.5px;
   }
-  h2 { font-size: 1.5rem; }
+  
+  h2 {
+    color: var(--merah-ldks);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
   
   p.subtitle {
     color: var(--abu-teks);
     margin-bottom: 25px;
     font-size: 0.95rem;
+    font-weight: 500; /* Agak tebal */
   }
   
-  
-  /* === TWIBBON CARD SPECIFIC === */
-  /* (Gaya lama kamu, dirapikan sedikit) */
+  /* === TWIBBON SPECIFIC === */
   .dropzone-area {
     border: 3px dashed #e0e0e0;
     border-radius: 16px;
     padding: 40px 20px;
     cursor: pointer;
     background-color: #fafafa;
-    color: #aaa;
+    color: #888;
     transition: all 0.3s ease;
+    font-weight: 600; /* Teks instruksi tebal */
   }
   .dropzone-active {
     border-color: var(--merah-ldks); background-color: #fff5f5; color: var(--merah-ldks);
@@ -155,29 +153,36 @@
     border-radius: 12px; margin-bottom: 20px;
   }
   .slider-group { display: flex; align-items: center; margin-bottom: 15px; }
-  .slider-label { font-weight: bold; color: #666; margin-right: 10px; font-size: 0.9rem; }
+  .slider-label { 
+      font-weight: 700; /* Label Zoom Tebal */
+      color: #444; margin-right: 10px; font-size: 0.9rem; 
+  }
   input[type=range] { accent-color: var(--merah-ldks); }
   
-  /* BUTTONS */
+  /* BUTTONS (Dibuat Tebal) */
   .btn {
-    border: none; padding: 12px 24px; font-size: 1rem; font-weight: bold;
+    border: none; padding: 14px 24px; font-size: 1rem;
+    font-weight: 700; /* Tombol Bold */
     border-radius: 50px; cursor: pointer; transition: all 0.2s; width: 100%;
+    font-family: 'Poppins', sans-serif; /* Pastikan tombol pakai Poppins */
   }
   .btn-download {
     background-color: var(--merah-ldks); color: white;
+    letter-spacing: 0.5px;
   }
   .btn-download:hover { background-color: #a00d25; box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3); }
+  
   .btn-ganti {
-    background: transparent; border: 2px solid #ddd; color: #666; font-size: 0.9rem; padding: 8px 16px;
+    background: transparent; border: 2px solid #ddd; color: #666; 
+    font-size: 0.9rem; padding: 10px 16px;
+    font-weight: 600;
   }
   .btn-ganti:hover { border-color: var(--merah-ldks); color: var(--merah-ldks); }
   
-  
   /* === CAPTION CARD SPECIFIC === */
   .caption-card {
-    text-align: left; /* Caption enaknya rata kiri */
-    display: flex;
-    flex-direction: column;
+    text-align: left;
+    display: flex; flex-direction: column;
   }
   
   .caption-box {
@@ -187,38 +192,38 @@
     border: 1px solid #eee;
     margin-bottom: 20px;
     font-size: 0.95rem;
-    line-height: 1.6;
+    line-height: 1.7;
     color: #333;
-    max-height: 400px; /* Biar gak kepanjangan, dikasih scroll kalo perlu */
+    max-height: 400px;
     overflow-y: auto;
+    font-weight: 500; /* Isi caption agak tebal biar jelas */
   }
   
-  .caption-box p { margin: 0 0 10px; }
-  .caption-box b { color: var(--merah-ldks); }
+  .caption-box p { margin: 0 0 12px; }
+  .caption-box b { 
+      color: var(--merah-ldks); 
+      font-weight: 700; /* Bold banget buat nama/motto */
+  }
   
   .quote {
     font-style: italic;
-    font-weight: bold;
+    font-weight: 700; /* Quote tebal */
     color: var(--merah-ldks);
-    border-left: 4px solid var(--merah-ldks);
+    border-left: 5px solid var(--merah-ldks);
     padding-left: 15px;
     margin: 20px 0;
     background: #fff5f5;
-    padding: 10px 15px;
+    padding: 12px 18px;
     border-radius: 0 8px 8px 0;
   }
   
   .btn-copy {
-    background-color: #333;
-    color: white;
-    margin-top: auto; /* Dorong tombol ke bawah */
+    background-color: #222; color: white; margin-top: auto;
   }
-  .btn-copy:hover { background-color: #555; }
-  .btn-copy.success {
-    background-color: #28a745; /* Warna hijau kalau berhasil */
-  }
+  .btn-copy:hover { background-color: #444; }
+  .btn-copy.success { background-color: #198754; }
   
-  /* RESPONSIVE TWEAK */
+  /* RESPONSIVE */
   @media (max-width: 768px) {
     .main-wrapper { gap: 20px; }
     .card { padding: 25px 20px; }
