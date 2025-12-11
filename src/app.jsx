@@ -3,18 +3,21 @@ import AvatarEditor from 'react-avatar-editor';
 import { useDropzone } from 'react-dropzone';
 import './app.css';
 
-// ⚠️ Pastikan file frame kamu resolusinya BAGUS (minimal 1000x1000px)
+// ⚠️ Pastikan file frame ada di folder public
 const FRAME_URL = "/frame-ldks.png"; 
 
 const App = () => {
   // --- STATE ---
   const [image, setImage] = useState(null);
   const [scale, setScale] = useState(1.2); 
-  const [rotate, setRotate] = useState(0); // Tambah fitur putar biar flexible
+  const [rotate, setRotate] = useState(0); 
   const [copySuccess, setCopySuccess] = useState("Salin Caption");
+  
   const editorRef = useRef(null);
+  // Ref untuk nyimpen jarak cubitan terakhir
+  const lastPinchDist = useRef(null); 
 
-  // --- LOGIC TWIBBON ---
+  // --- LOGIC DROPZONE ---
   const onDrop = useCallback(acceptedFiles => {
     if (acceptedFiles && acceptedFiles.length > 0) {
       setImage(acceptedFiles[0]);
@@ -27,38 +30,67 @@ const App = () => {
     onDrop,
     accept: { 'image/*': [] },
     multiple: false,
-    noClick: !!image // Biar kalau udah ada gambar, klik area editor ga buka file picker lagi (biar fokus geser)
+    noClick: !!image 
   });
 
-  // --- FITUR ZOOM PAKAI SCROLL MOUSE ---
+  // --- LOGIC ZOOM (MOUSE SCROLL) ---
   const handleWheel = (e) => {
     if (image) {
-      // Mencegah halaman ikut scroll saat nge-zoom foto
       e.preventDefault(); 
-      const zoomSensitivity = 0.05; // Atur kecepatan zoom
+      const zoomSensitivity = 0.05;
       const delta = e.deltaY > 0 ? -zoomSensitivity : zoomSensitivity;
-      const newScale = Math.min(Math.max(scale + delta, 1), 5); // Batas zoom 1x - 5x
+      const newScale = Math.min(Math.max(scale + delta, 1), 5);
       setScale(newScale);
     }
   };
 
+  // --- LOGIC ZOOM (PINCH / CUBIT DI HP) ---
+  // Rumus Matematika: Jarak 2 jari (Hypotenuse)
+  const getDistance = (touch1, touch2) => {
+    return Math.hypot(touch2.pageX - touch1.pageX, touch2.pageY - touch1.pageY);
+  };
+
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 2) {
+      // Kalau 2 jari nempel, simpan jarak awalnya
+      const dist = getDistance(e.touches[0], e.touches[1]);
+      lastPinchDist.current = dist;
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length === 2 && lastPinchDist.current) {
+      // Hitung jarak baru
+      const dist = getDistance(e.touches[0], e.touches[1]);
+      // Hitung selisih jarak (Zoom Factor)
+      const zoomFactor = dist / lastPinchDist.current;
+      
+      // Update scale (dikali zoomFactor biar smooth)
+      // Kita limit biar ga terlalu cepet perubahannya
+      const newScale = Math.min(Math.max(scale * (zoomFactor), 1), 5);
+      
+      setScale(newScale);
+      lastPinchDist.current = dist; // Update jarak terakhir
+    }
+  };
+
+  const handleTouchEnd = () => {
+    // Reset kalau jari diangkat
+    lastPinchDist.current = null;
+  };
+
+  // --- DOWNLOAD LOGIC ---
   const handleDownload = async () => {
     if (editorRef.current) {
-      // TRICK RAHASIA: Kita ambil canvas yang SUDAH jadi (1080x1080) dari editor
-      // Ini menjamin preview di layar = hasil download 100% SAMA.
       const canvas = editorRef.current.getImageScaledToCanvas();
       const ctx = canvas.getContext('2d');
 
-      // Gambar Frame di atasnya
       const frameImg = new Image();
       frameImg.src = FRAME_URL;
       frameImg.crossOrigin = "anonymous"; 
       
       frameImg.onload = () => {
-        // Gambar frame seukuran canvas (1080x1080)
         ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-        
-        // Download
         const dataUrl = canvas.toDataURL('image/png', 1.0);
         const link = document.createElement('a');
         link.download = 'TWIBBON-LDKS-2025.png';
@@ -68,8 +100,8 @@ const App = () => {
     }
   };
 
-  // --- LOGIC CAPTION (SAMA KAYAK SEBELUMNYA) ---
-  const captionText = `💫 I'm ready to find direction and become better with LDKS SMK Telkom Sidoarjo 2025! 💫\n\nHalo teman-teman 👋🏻\nPerkenalkan, saya [Nama kamu] dari [Organisasi Kamu] selaku Peserta LDKS SMK Telkom Sidoarjo siap menjalani rangkaian kegiatan LDKS dengan penuh semangat, disiplin, dan aktif. Saya siap belajar, berproses, dan tumbuh menjadi pribadi yang lebih tangguh dan bertanggung jawab.\n\n⏳Motto Hidup\n[Isi dengan motto kamu]\n\n"From Inspiration to Transformation"\nSee you at LDKS SMK Telkom Sidoarjo 2025 👀`;
+  // --- CAPTION LOGIC ---
+  const captionText = `💫 I'm ready to find direction and become better with LDKS SMK Telkom Sidoarjo 2025! 💫\n\nHalo teman-teman 👋🏻\nPerkenalkan, saya [Nama kamu] dari [Organisasi Kamu] selaku Peserta LDKS SMK Telkom Sidoarjo siap menjalani rangkaian kegiatan LDKS dengan penuh semangat, disiplin, dan aktif.\n\n"From Inspiration to Transformation"\nSee you at LDKS SMK Telkom Sidoarjo 2025 👀`;
 
   const handleCopyCaption = async () => {
     try {
@@ -83,17 +115,12 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <div className="background-shapes">
-        <div className="shape shape-1"></div>
-        <div className="shape shape-2"></div>
-      </div>
-
       <div className="main-wrapper">
         
-        {/* === KARTU GENERATOR === */}
+        {/* KARTU EDITOR */}
         <div className="card twibbon-card">
           <h1>Twibbon LDKS SMK Telkom Sidoarjo 2025</h1>
-          <p className="subtitle">Geser, Zoom (Scroll), dan Putar fotomu agar pas!</p>
+          <p className="subtitle">Cubit (Pinch) untuk Zoom, Geser untuk atur posisi.</p>
           
           {!image ? (
             <div {...getRootProps()} className={`dropzone-area ${isDragActive ? 'dropzone-active' : ''}`}>
@@ -103,16 +130,17 @@ const App = () => {
             </div>
           ) : (
             <div className="editor-container">
-              {/* WRAPPER EDITOR */}
-              {/* Kita pasang onWheel disini biar bisa scroll-zoom */}
+              {/* AREA INTERAKSI: Mouse Wheel + Touch Pinch */}
               <div 
                 className="twibbon-wrapper" 
                 onWheel={handleWheel}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
               >
                 <AvatarEditor
                   ref={editorRef}
                   image={image}
-                  // KITA SET RESOLUSI TINGGI LANGSUNG DISINI
                   width={1080}
                   height={1080}
                   border={0}
@@ -123,35 +151,24 @@ const App = () => {
                 <img src={FRAME_URL} alt="Frame" className="frame-overlay" />
               </div>
 
-              {/* KONTROLS */}
+              {/* SLIDER CONTROLS (Tetap ada buat opsi) */}
               <div className="controls">
-                
-                {/* Control Zoom */}
                 <div className="slider-group">
                     <span className="slider-label">🔍 Zoom</span>
                     <input
                       type="range"
                       onChange={(e) => setScale(parseFloat(e.target.value))}
-                      min="1"
-                      max="5"
-                      step="0.05"
-                      value={scale}
+                      min="1" max="5" step="0.05" value={scale}
                     />
                 </div>
-
-                {/* Control Putar (Rotasi) - FITUR BARU */}
                 <div className="slider-group">
                     <span className="slider-label">🔄 Putar</span>
                     <input
                       type="range"
                       onChange={(e) => setRotate(parseFloat(e.target.value))}
-                      min="-180"
-                      max="180"
-                      step="1"
-                      value={rotate}
+                      min="-180" max="180" step="1" value={rotate}
                     />
                 </div>
-                
                 <button className="btn btn-ganti" onClick={() => setImage(null)}>
                   📂 Ganti Foto Lain
                 </button>
@@ -164,9 +181,9 @@ const App = () => {
           )}
         </div>
 
-        {/* === KARTU CAPTION === */}
+        {/* KARTU CAPTION */}
         <div className="card caption-card">
-          <h2>📋 Caption Siap Pakai</h2>
+          <h2>📋 Caption</h2>
           <div className="caption-box">
             <p>💫 I'm ready to find direction and become better with LDKS SMK Telkom Sidoarjo 2025! 💫</p>
             <br/>
