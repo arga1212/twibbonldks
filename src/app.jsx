@@ -165,7 +165,7 @@ const App = () => {
               </div>
               
               <button className="btn btn-download" onClick={handleDownload}>
-                DOWNLOAD
+                DOWNLOAD DISNI
               </button>
             </div>
           )}
