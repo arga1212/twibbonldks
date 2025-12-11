@@ -173,7 +173,7 @@ const App = () => {
 
         {/* KARTU CAPTION (UPDATE BARU) */}
         <div className="card caption-card">
-          <h2>📋 Caption Siap Pakai</h2>
+          <h2>📋 Caption</h2>
           <div className="caption-box">
             <p>💫 I'm ready to find direction and become better with LDKS SMK Telkom Sidoarjo 2025! 💫</p>
             <br/>
